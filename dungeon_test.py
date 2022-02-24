@@ -26,7 +26,8 @@ def clear():
         _ = system('clear') 
 
 #attack results
-def fight():
+def combat():
+    print("Good")
     while plife > 0 and glife > 0:
         print()
         dmg = patk + random.choice(atkvar)      #calculates players damage for this round
@@ -36,7 +37,6 @@ def fight():
         plife -= dmg                            #applies damge to players life total
         print(f"The goblin hit you for {dmg} damage.  You are down to {plife} life remaining.")
         sleep(1)
-    return plife
 
 #fight results
 def results():
@@ -56,7 +56,7 @@ def results():
         print("...but more importantly.  So am I...")
     else:               #only goblin dies
         print("You managed to slay a goblin!  Are you proud of yourself?  You really shouldn't be.")
-    return plife
+    
 
 #first choice 
 def main():
@@ -74,8 +74,8 @@ def main():
         exit()
     elif fight.lower() in ["f", "fight"]:
         print("You muster your courage and square up against the goblin.")
-        fight()
+        combat()
         results()
 
-if __name__ == "__main__": main()
+main()
 
