@@ -40,11 +40,11 @@ def fight():
 
 #fight results
 def results():
-    if plife < 1 and glife < 1:
+    if plife < 1 and glife < 1:         #both player and goblin died
         print("You managed to slay the goblin, however, your own injuries are too grevious and you too succumb to death.")
         sleep(1)
         print("How embarassing.")
-    elif plife < 1:
+    elif plife < 1:         #only the player died
         print("You have died...")
         sleep(1)
         print("Seriously...")
@@ -54,7 +54,7 @@ def results():
         print("You're parents are very dissapointed in you...")
         sleep(2)
         print("...but more importantly.  So am I...")
-    else:
+    else:               #only goblin dies
         print("You managed to slay a goblin!  Are you proud of yourself?  You really shouldn't be.")
     return plife
 

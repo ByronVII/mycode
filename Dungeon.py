@@ -31,16 +31,18 @@ print("You enter a dungeon.")
 
 #first choice
 while True:
-    fight= input("Youn encounter a goblin.  Do you want to 'fight' it or 'run'?").lower()
-    if fight.lower() not in ["r", "run", "fight", "f"]:
+    fight= input("Youn encounter a goblin.  Do you want to 'fight' it or 'run'?  ").lower()       #encounter prompt
+    if fight in ["q", "quit"]:
+        break
+    elif fight not in ["r", "run", "fight", "f"]:
         print("Command not valid.  Please enter a valid command.  (fight or run): ")
     else:
         break
 
-if fight.lower() in ["r", "run"]:
+if fight in ["r", "run"]:           #player chose to run
     print("Coward...")
     exit()
-elif fight.lower() in ["f", "fight"]:
+elif fight in ["f", "fight"]:       #player chose to fight
     print("You muster your courage and square up against the goblin.")
 
 #attack results
@@ -52,22 +54,22 @@ while plife > 0 and glife > 0:
         glife -= dmg                            #applies damge to goblins life total
         print(f"You hit the goblin for {dmg} damage.  It is down to {glife} life remaining.")
     else:
-        print("You missed!")
+        print("You missed!")            #player missed
     hit = random.randint(1,4)
     if hit != 1:
         dmg = gatk + random.choice(atkvar)      #calculates goblins damage for this round
         plife -= dmg                            #applies damge to players life total
         print(f"The goblin hit you for {dmg} damage.  You are down to {plife} life remaining.")
     else:
-        print("The goblin missed!")
+        print("The goblin missed!")     #goblin missed
     sleep(1)
 
 #fight results
-if plife < 1 and glife < 1:
+if plife < 1 and glife < 1:         #both player and goblin die
     print("You managed to slay the goblin, however, your own injuries are too grevious and you too succumb to death.")
     sleep(1)
     print("How embarassing.")
-elif plife < 1:
+elif plife < 1:         #just the player dies
     print("You have died...")
     sleep(1)
     print("Seriously...")
@@ -77,7 +79,8 @@ elif plife < 1:
     print("You're parents are very dissapointed in you...")
     sleep(2)
     print("...but more importantly.  So am I...")
-else:
+    sleep(3)
+else:           #just the goblin dies
     print("You managed to slay a goblin!  Are you proud of yourself?  You really shouldn't be.")
 
 
