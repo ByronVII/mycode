@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 import csv
-import random
 from os import system, name
-
-#data pulled from http://miroz.com.hr/random/monsters.csv
 
 #disctionary to call data set headers and clean display names  ( # : [ data set header , display name ] )
 attributes={1:['STR','Strength'],2:['DEX','Dexterity'],3:['CON','Constitution'],4:['INT','Intelligence'],5:['WIS','Wisdom'],6:['CHA','Charisma'],7:['HP','Hit Points'],8:['AC','Armor Class'],9:['ChallengeRating','Challenge Rating'],10:['ChallengeXP','Challenge XP'],11:['STRMod','Strength Modifier'],12:['DEXMod','Dexterity Modifier'],13:['CONMod','Constitution Modifier'],14:['INTMod','Intelligence Modifier'],15:['WISMod','Wisdom Modifier'],16:['CHAMod','Charisma Modifier'],17:['HPDice','Hit Point Dice'],18:['ACType','AC Type']}
@@ -20,17 +17,11 @@ def clear():
 
 def namesearch(attr,attrvalue,oper):
     monlist= []
-    ran= 0
     with open("/home/student/mycode/read_write/monsters.csv", "r") as monsters:
         for mon in csv.DictReader(monsters, delimiter=";"):
             #creates a list of monsters that meet the requested parameters
-            ran += 1
-            if oper == "ran":
-                if ran == attrvalue:
-                    monlist.append(mon)
-                    return monlist
             if oper == "con":
-                if attrvalue in mon[attr]:V
+                if attrvalue in mon[attr]:
                     monlist.append(mon)
             if oper == "ex":
                 if mon[attr] == attrvalue:
@@ -110,8 +101,8 @@ def main():
     clear()
     print('\033[95m' + '\033[1m' + "Welcome to the Monster Database!" + '\033[0m')
     while True:
-        menu1 = input("How would you like to search the DB by (n)ame, (a)ttribute, or (r)andom?  ").lower()        #search by name or attribute
-        if menu1 in ["name","n","attribute","a","r","random"]:
+        menu1 = input("How would you like to search the DB by (n)ame or (a)ttribute?  ").lower()        #search by name or attribute
+        if menu1 in ["name","n","attribute","a"]:
             break
         elif menu1 in ["q","quit"]:
             exit()
@@ -190,13 +181,6 @@ def main():
                 clear()
                 print(resp)
                 printfull(monlist)
-
-    elif menu1 in ["r", "random"]:
-        ran= random.randint(1,159)
-        oper= "ran"
-        monlist= namesearch(0,ran,oper)
-        printfull(monlist)
-        
 
     print()
     cont= input("Would you like look up any other monster information?  ").lower()
