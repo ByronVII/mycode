@@ -6,12 +6,14 @@ from time import sleep as sleep
 from os import system, name
 
 #set variables
-plife = 25      #players starting life
-patk = 4        #players attack value
-glife = 20      #goblins starting life
-gatk = 3        #goblins attack rating
-dmg = 0         #damage
-atkvar = [-2,-1,-1,0,0,0,0,1,1,2]       #damage variability
+def setvars():
+    #player stats
+    player= {"name":"Bryan", "life":25, "attack": 4}
+    #creature stats
+    creatures= {"goblin":{"name":"goblin","life":20, "attack":3}}
+    atkvar = [-2,-1,-1,0,0,0,0,1,1,2]       #damage variability
+    stats= {"player":player, "creatures":creatures}
+    return stats
 
 #defining functions
 # define our clear function 
@@ -26,14 +28,22 @@ def clear():
         _ = system('clear') 
 
 #attack results
-def combat():
+def combat(stats):
     print("Good")
-    while plife > 0 and glife > 0:
+    plife= stats["player"]["life"]
+    patk= stats["player"]["attack"]
+    cname= stats["creatures"]["goblin"]["name"]
+    clife= stats["creatures"]["goblin"]["life"]
+    catk= stats["creatures"]["goblin"]["attack"]
+    atkvar = [-2,-1,-1,0,0,0,0,1,1,2]       #damage variability
+    dmg= 0
+
+    while plife > 0 and clife > 0:
         print()
         dmg = patk + random.choice(atkvar)      #calculates players damage for this round
-        glife -= dmg                            #applies damge to goblins life total
-        print(f"You hit the goblin for {dmg} damage.  It is down to {glife} life remaining.")
-        dmg = gatk + random.choice(atkvar)      #calculates goblins damage for this round
+        clife -= dmg                            #applies damge to goblins life total
+        print(f"You hit the goblin for {dmg} damage.  It is down to {clife} life remaining.")
+        dmg = catk + random.choice(atkvar)      #calculates goblins damage for this round
         plife -= dmg                            #applies damge to players life total
         print(f"The goblin hit you for {dmg} damage.  You are down to {plife} life remaining.")
         sleep(1)
@@ -60,6 +70,7 @@ def results():
 
 #first choice 
 def main():
+    stats= setvars()
     clear()
     print("You enter a dungeon.")
     while True:
@@ -74,8 +85,8 @@ def main():
         exit()
     elif fight.lower() in ["f", "fight"]:
         print("You muster your courage and square up against the goblin.")
-        combat()
-        results()
+        result= combat(stats)
+        results(result)
 
 main()
 
