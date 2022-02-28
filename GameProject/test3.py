@@ -1,9 +1,4 @@
-import getch
-
-import msvcrt
-  
-while True:
-    character = msvcrt.getch()
-    print(repr(character))
-    if character == b'q':
-        break
+player= {"stats":{"name":"Bryan", "life":25, "attack": 4},"equipment":{"weapon":"sword"},"inventory":{}}
+print(f"You have {player['equipment']['weapon']} equipped.")
+player['equipment']['weapon']= input("What weapon would you like to use?")
+print(f"You have {player['equipment']['weapon']} equipped.")
