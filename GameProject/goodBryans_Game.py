@@ -84,11 +84,15 @@ def splash2():
 #set variables
 def setvars():
     #player stats
-    player= {"stats":{"name":"Bryan",'level':1,"hp":[25,25], "mana":[10,10],"atk":4, "def":0,"xp":[0,10]},"equipment":{"weapon":"","offhand":"","head":"","chest":"","legs":"","accessory":""},"inventory":[{"gold":0,"potion":0},'shirt','pants','hat','sword','stick'],'abilities':{1:['power attack',0,'deals 150% damage with a 75% chance to hit.'],2:['heal',5,'restores 30% of your max hp'],3:['fireball',15,'shoots a fireball at your enemies dealing damage to all enemies']}}
+    player= {"stats":
+                    {"name":"Bryan",'level':1,"hp":[25,25], "mana":[10,10],"atk":4, "def":0,"xp":[0,10]},
+                    "equipment":{"weapon":"","offhand":"","head":"","chest":"","legs":"","accessory":""},"inventory":[{"gold":0,"potion":0},'shirt','pants','hat','sword','stick'],'abilities':{1:['power attack',0,'deals 150% damage with a 75% chance to hit.'],2:['heal',5,'restores 30% of your max hp'],3:['fireball',15,'shoots a fireball at your enemies dealing damage to all enemies']}}
     #creature stats
-    monsters= {"goblin":{"name":"goblin","hp":10, "atk":3,'xp':10,'loot':1},'hobgoblin':{"name":"hobgoblin","hp":15, "atk":3,'xp':10,'loot':1},'orc':{},'gnoll':{},'ogre':{},'monsters':['goblin','hobgoblin','orc','gnoll','ogre']}
+    monsters= {"goblin":
+            {"name":"goblin","hp":10, "atk":3,'xp':10,'loot':1},'hobgoblin':{"name":"hobgoblin","hp":15, "atk":3,'xp':10,'loot':1},'orc':{},'gnoll':{},'ogre':{},'monsters':['goblin','hobgoblin','orc','gnoll','ogre']}
     #items
-    items= {"gear":{"stick":{'slot':'weapon','stat':'atk',"atk":1},"sword":{'slot':'weapon','stat':'atk',"atk":3},'hat':{"slot":'head','stat':'def',"def":1},'shirt':{'slot':'chest','stat':'def','def':1},'pants':{'slot':'legs','stat':'def','def':1},'weapon':{'slot':'','stat':'atk','atk':1},'armor':{'slot':'','stat':'def','def':1}},"items":{}}
+    items= {"gear":{"stick":{'slot':'weapon','stat':'atk',"atk":1},"sword":
+        {'slot':'weapon','stat':'atk',"atk":3},'hat':{"slot":'head','stat':'def',"def":1},'shirt':{'slot':'chest','stat':'def','def':1},'pants':{'slot':'legs','stat':'def','def':1},'weapon':{'slot':'','stat':'atk','atk':1},'armor':{'slot':'','stat':'def','def':1}},"items":{}}
     #loot
     loot= {}
     #spells
@@ -296,9 +300,10 @@ def pmenu():
             print(f"Inventory")
             _= input()
         elif pmenu == "4":
-            for a in range(data['player']['stats']['level']):
-                lvl = a + 1
-                print(f"{lvl}- {data['player']['abilities'][lvl][0]}   MP: {data['player']['abilities'][lvl][1]}\n  -{data['player']['abilities'][a][2]}  ")
+            for a in range(1, data['player']['stats']['level']+1):
+                print(f"{a}- {data['player']['abilities'][a][0]}   MP: {data['player']['abilities'][a][1]}\n  -{data['player']['abilities'][a][2]}\n  ")
+            abil= input("Press ability number to use ability or Enter to continue.")
+
         elif pmenu == "5":
             savegame()
             _=input("Game Saved.  Press Enter to continue.")
@@ -334,13 +339,14 @@ def equip(item,slot):        #stats
         print(f"{item} not found in inventory")
 #attack results
 def combat():
-    global data
+#    global data
     plife= data["player"]["stats"]["hp"][0]
     patk= data["player"]["stats"]["atk"]
     pdef= data['player']['stats']['def']
-    mname= data["monsters"]["goblin"]["name"]
-    mlife= data["monsters"]["goblin"]["hp"]
-    matk= data["monsters"]["goblin"]["atk"]
+    mon= randint(1, data['player']['stats']['level'])         #data["monsters"]["goblin"]["name"]
+    mname= data['monsters']['monsters'][mon-1]
+    mlife= data["monsters"][mname]["hp"]
+    matk= data["monsters"][mname]["atk"]
     atkvar = [-2,-1,-1,0,0,0,0,1,1,2]       #damage variability
     dmg= 0
 
@@ -357,7 +363,18 @@ def combat():
                 print(f"You hit {mname} for {dmg}.  {mname} is down to {mlife} life.")
                 break
             elif fmenu == '2':
-                ability()
+                abil= []
+                abil= ability()
+                if abil[0] == 1 and abil[1] == 1:
+                    clear()
+                    displaymap()
+                    dmg = round((patk + random.choice(atkvar)) * 1.5)
+                    mlife -= dmg
+                    print(f"You hit {mname} with a powerful blow for {dmg}.  {mname} is down to {mlife} life.")
+                    break
+                elif abil[0] == 1 and abil[1] == 0:
+                    print("You swing wildly, but miss your target.")
+
                 break
             elif fmenu == '3':
                 useitem()
@@ -376,15 +393,6 @@ def combat():
         else:
             plife -= dmg
             print(f"{mname} hit you for {dmg}.  You are down to {plife} life.")
-
-#        print()
-#        dmg = patk + random.choice(atkvar)      #calculates players damage for this round
-#        mlife -= dmg                            #applies damge to goblins life total
-#        print(f"You hit the {mname} for {dmg} damage.  It is down to {mlife} life remaining.")
-#        dmg = matk + random.choice(atkvar)      #calculates goblins damage for this round
-#        plife -= dmg                            #applies damge to players life total
-#        print(f"The {mname} hit you for {dmg} damage.  You are down to {plife} life remaining.")
-#        sleep(1)
     data["player"]["stats"]["hp"][0] = plife
 
 #fight results
@@ -416,24 +424,34 @@ def combat():
     _= input("Press enter to continue.")
 
 def ability():
-    print("Available abilities.  Which would you like to use?")
-    for a in range(data['player']['stats']['level']):
-        lvl= a+1
-        print(f"{lvl}- {data['player']['abilities'][lvl][0].capitalize()}     MP: {data['player']['abilities'][lvl][1]}")
-    abil= input()
+    while True:
+        print("Available abilities.  Which would you like to use?")
+        for a in range(1,data['player']['stats']['level']+1):
+            print(f"{a}- {data['player']['abilities'][a][0]}     MP: {data['player']['abilities'][a][1]}\n")
+        abil= input()
+        if abil == "1":
+            if randint(1,4) != 1:
+                return [1,1]
+            else:
+                return [1,0]
+            break
+
 
 def useitem():
     print("Use Item")
 
 def levelup():
     lvl= data['player']['stats']['level']
-    data['player']['stats']['hp'][1] =+ (10 + 5 * data['player']['stats']['level'])
+    data['player']['stats']['hp'][1] += (10 + 5 * data['player']['stats']['level'])
     data['player']['stats']['level'] += 1
+    lvl= data['player']['stats']['level']
     data['player']['stats']['xp'][1] *= 3
+    data['player']['stats']['atk'] += 2
+    data['player']['stats']['def'] += 1
     data['player']['stats']['mana'][1] += 10
     data['player']['stats']['hp'][0] = data['player']['stats']['hp'][1]
     data['player']['stats']['mana'][0] = data['player']['stats']['mana'][1]
-    print(f"Congratulations!  You have gained enough experience to advance to Level {lvl + 1}\n  You gained {10 + 5 * lvl} Max Hit Points, 10 Max Mana, 2 Attack, and 1 Defense.\n  You have gained the {data['player']['abilities'][lvl][0].title()}.\n  {data['player']['abilities'][lvl][0].title()} {data['player']['abilities'][lvl][2]} for {data['player']['abilities'][lvl][1]} Mana.")
+    print(f"Congratulations!  You have gained enough experience to advance to Level {lvl}\n  You gained {10 + 5 * (lvl-1)} Max Hit Points, 10 Max Mana, 2 Attack, and 1 Defense.\n  You have gained the {data['player']['abilities'][lvl][0].title()}.\n  {data['player']['abilities'][lvl][0].title()} {data['player']['abilities'][lvl][2]} for {data['player']['abilities'][lvl][1]} Mana.")
 
 
 

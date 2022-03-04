@@ -90,29 +90,28 @@ def splash(spl):
 #set variables
 def setvars():
     #player stats
-    player= {   "stats":   {"name":"Bryan", 'level':1,  "hp":[25,25],   "mana":[10,10], "atk":4,    "def":0,"xp":[0,30]},
+    player= {   "stats":   {"name":"Bryan", 'level':1,  "hp":[25,25],   "mana":[10,10], "atk":4,    "def":0,"xp":[0,10]},
                 "equipment":{"weapon":"",   "offhand":"",   "head":"",  "chest":"", "legs":"",  "accessory":""},
                 "inventory":[   {"gold":0,"potions":0}], 
                 'abilities':{1:['power attack',0,'deals 150% damage with a 75% chance to hit.'],    2:['heal',5,'restores 30% of your max hp'],     3:['poison strike', 15,'inflicts poison on target causing damage each turn'],4:['fireball',15,'shoots a fireball at your enemies dealing damage to all enemies']}}
     #creature stats
     monsters= { 'monsters':['goblin','hobgoblin','orc','gnoll','ogre'],
                 "goblin":{  "name":"goblin",  "hp":10,  "atk":3,    'xp':10,'   loot':1},
-                'hobgoblin':{"name":"hobgoblin","hp":15, "atk":4,'xp':25,'loot':2},
-                'orc':{"name":"orc","hp":30, "atk":7,'xp':40,'loot':3},
-                'gnoll':{"name":"gnoll","hp":40, "atk":9,'xp':0,'loot':4},
-                'ogre':{"name":"Ogre","hp":150, "atk":10,'xp':150,'loot':5}}
+                'hobgoblin':{"name":"hobgoblin","hp":15, "atk":3,'xp':10,'loot':1},'orc':{},
+                'gnoll':{},
+                'ogre':{}}
     #items
-    items= {"gear":{    "stick":{'slot':'weapon','stat':'atk',"atk":1,'useable':'no'},
-                        "sword":{'slot':'weapon','stat':'atk',"atk":3,'useable':'no'},
-                        'hat':{"slot":'head','stat':'def',"def":1,'useable':'no'},
-                        'shirt':{'slot':'chest','stat':'def','def':1,'useable':'no'},
-                        'pants':{'slot':'legs','stat':'def','def':1,'useable':'no'},
-                        'weapon':{'slot':'','stat':'atk','atk':1,'useable':'no'},
-                        'armor':{'slot':'','stat':'def','def':1,'useable':'no'},
-                        'potion':{'slot':'',"useable":"yes"},
-                        'scrap1':{'slot':'','useable':'yes'},
-                        'scrap2':{'slot':'','useable':'yes'},
-                        'scrap3':{'slot':'','useable':'yes'}}}
+    items= {"gear":{    "stick":{'slot':'weapon','stat':'atk',"atk":1,'usable':'no'},
+                        "sword":{'slot':'weapon','stat':'atk',"atk":3,'usable':'no'},
+                        'hat':{"slot":'head','stat':'def',"def":1,'usable':'no'},
+                        'shirt':{'slot':'chest','stat':'def','def':1,'usable':'no'},
+                        'pants':{'slot':'legs','stat':'def','def':1,'usable':'no'},
+                        'weapon':{'slot':'','stat':'atk','atk':1,'usable':'no'},
+                        'armor':{'slot':'','stat':'def','def':1,'usable':'no'},
+                        'potion':{"usable":"yes",'number':data['player']['inventory']['potions']},
+                        'scrap1':{'usable':'yes'},
+                        'scrap1':{'usable':'yes'},
+                        'scrap1':{'usable':'yes'}}
     #loot
     loot= {1:[],2:[],3:[],4:[]}
     global combatenable
@@ -303,19 +302,16 @@ def events(event):
         print("You found a scrap of paper.  You can check the paper again from your inventory.")
         print(f"  __________\n /  _____  /\n/  |  ___| \\\n\\  | |__   /\n/  |__  \\  \\\n\\   __)  | /\n \\ |____/ / \n/________\\\n(Press Enter to Continue.")
         data['player']['inventory'].append("scrap1")
-        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
     if event == '2':
         print("You found a scrap of paper.  You can check the paper again from your inventory.")
         print(f" ___________\n|  _   _   /\n| | | | | / \n| | |_| | \\ \n| |___  | / \n|     | | \\ \n|     |_|  \\\n|__________/\n(Press Enter to Continue.")
         data['player']['inventory'].append("scrap2")
-        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
     if event == '3':
         print("You found a scrap of paper.  You can check the paper again from your inventory.")
         print(f"  _________\n /   ___   |\n \\  / _ \\  |\n / | (_) | |\n \\  > _ <  |\n / | (_) | |\n/   \___/  |\n\\__________|\n(Press Enter to Continue.")
         data['player']['inventory'].append("scrap3")
-        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
     if event == '4':        
         print("You found a chest.  There are three dials on front numbered 0 through 9.\nEnter the combo or press Enter to Continue.\n(Hint: perhaps the combo can be found elsewhere in the cave)")
@@ -327,27 +323,24 @@ def events(event):
             print(type(data['player']['inventory'][0]['gold']))
             data['player']['inventory'][0]['gold'] += int(132)
             data['player']['inventory'][0]['potions'] += int(2)
-            maplist[MapLoc[0]][MapLoc[1]][2] = ""
         elif combo != "":
             print("You attempt to open the chest, but the latch remains firmly in place.")
     if event == '5':
         print("You found a green key.")
         data['player']['inventory'].append("green key")
-        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
     if event == '6':
         print("You found a yellow key.")
         data['player']['inventory'].append("yellow key")
-        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
     if event == '7':
         print("You found a red key.")
         data['player']['inventory'].append("red key")
-        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
     if event == '8':
         print("Green Door")
         maplist[MapLoc[0]][MapLoc[1]-2][1] = "\033[1;32;40m|\33[0;0m"
+        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         displaymap()
         if 'green key' in data['player']['inventory']:
             print("You stand before a big green door.  You notice a keyhole. \nYou pull the green key out of your inventory, insert it into the keyhole, and turn the key.  The key crumbles away as the door opens with a creak.")
@@ -358,37 +351,32 @@ def events(event):
             print("You stand before a big green door.  You try to unlock the door, but none of your keys work.")
         else:
             print("You stand before a big green door.  You notice a keyhole, but you don't currently have any keys.")
-        _=input()
-
     if event == '9':
         maplist[MapLoc[0]][MapLoc[1]+2][1] = "\033[1;33;40m|\33[0;0m"
+        maplist[MapLoc[0]][MapLoc[1]][2] = ""
         displaymap()
         if 'yellow key' in data['player']['inventory']:
             print("You stand before a big yellow door.  You notice a keyhole. \nYou pull the yellow key out of your inventory, insert it into the keyhole, and turn the key.  The key crumbles away as the door opens with a creak.")
             maplist[MapLoc[0]][MapLoc[1]+2][1] = " "
-            maplist[MapLoc[0]][MapLoc[1]][2] = ""
+            maplist[MapLoc[0]][MapLoc[1]+2][2] = ""
             data['player']['inventory'].remove("yellow key")
         elif 'key' in data['player']['inventory']:
             print("You stand before a big yellow door.  You try to unlock the door, but none of your keys work.")
         else:
             print("You stand before a big yellow door.  You notice a keyhole, but you don't currently have any keys.")
-            _=input()
-
     if event == '0':
         for i in [-1,0,1]:
             maplist[MapLoc[0]-1][MapLoc[1]+i][1] = "\033[1;31;40m-\33[0;0m"
+            maplist[MapLoc[0]][MapLoc[1]+i][2] = ""
         displaymap()
         if 'yellow key' in data['player']['inventory']:
             print("You stand before a big red door.  You notice a keyhole. \nYou pull the red key out of your inventory, insert it into the keyhole, and turn the key.  The door opens with a creak.")
             for i in [-1,0,1]:
                 maplist[MapLoc[0]+1][MapLoc[1]+i][1] = " "
-                maplist[MapLoc[0]][MapLoc[1]][2] = ""
         elif 'key' in data['player']['inventory']:
             print("You stand before a big red door.  You can hear whimpering through the keyhole.  You try to unlock the door, but none of your keys work.  You try pounding on the door, but nothing happens.")
         else:
             print("You stand before a big red door.  You notice a keyhole, but you don't currently have any keys.  You can hear whimpering through the keyhole.  You try pounding on the door, but nothing happens.")
-        _=input()
-
     if event == 'a':
         print("You take your first steps into the cave.  As your eyes are adjust to the light you trip over something.\nLooking back you find a sturdy stick.  You think to yourself that maybe having the stick might not be a bad idea.\nStick has been added to your inventory.\nTo equip your new stick go to your menu and then the equipment screen and select the weapon slot.")
         data['player']['inventory'].append("stick")
@@ -434,14 +422,12 @@ def pmenu():
             print(f"Inventory:")
             print(f" -Gold: {inv[0]['gold']}\n -Potions: {inv[0]['potions']}")
             for i in range(1,len(inv)):
-                print(f" -{inv[i].title()}")
-            use= input("Press e + Enter if you would like to use an item or just Enter to continue." )
-            if use == "e":
-                useitem()
+                print(f" -{inv[i]}.title()")
+            _= input()
         elif pmenu == "4":
             for a in range(1, data['player']['stats']['level']+1):
                 print(f"{a}- {data['player']['abilities'][a][0]}   MP: {data['player']['abilities'][a][1]}\n  -{data['player']['abilities'][a][2]}\n  ")
-            abil= input("\nPress ability number to use ability or Enter to continue.")
+            abil= input("Press ability number to use ability or Enter to continue.")
 
         elif pmenu == "5":
             savegame()
@@ -643,39 +629,25 @@ def ability():
             break
 
 
-def useitem():
-    global data
+def useitem(item):
     inv = []
-    for i in range(1,len(data['player']['inventory'])):
+    for i in data['player']['inventory']:
         item= data['player']['inventory'][i]
-        useable= data['items']['gear'][item]['useable']
-        if useable == 'yes':
-            inv.append(item)
-    print(f"What would you like to use?\n 1- Potion: {data['player']['inventory'][0]['potions']}\n")
-    for i in range(len(inv)):
-         print(f" {i+2}- {inv[i]}")
-    use =input()
-    if use == '1':
-        if data['player']['inventory'][0]['potions'] > 0:
-            data['player']['stats']['hp'][0] += 15
-            if data['player']['stats']['hp'][0] > data['player']['stats']['hp'][1]:
-                data['player']['stats']['hp'][0] = data['player']['stats']['hp'][1]
-            data['player']['inventory'][0]['potions']
-        else:
-            print("You are out of potions.")
-            _=input()
-    elif len(inv) > 0:
-        item= inv[int(use)-2]          
-        if item == "scrap1":
-            clear()
-            print(f"  __________\n /  _____  /\n/  |  ___| \\\n\\  | |__   /\n/  |__  \\  \\\n\\   __)  | /\n \\ |____/ / \n/________\\\n(Press Enter to Continue.")
-        if item == 'scrap2':
-            clear()
-            print(f" ___________\n|  _   _   /\n| | | | | / \n| | |_| | \\ \n| |___  | / \n|     | | \\ \n|     |_|  \\\n|__________/\n(Press Enter to Continue.")
-        if item == 'scrap3':
-            clear()
-            print(f"  _________\n /   ___   |\n \\  / _ \\  |\n / | (_) | |\n \\  > _ <  |\n / | (_) | |\n/   \___/  |\n\\__________|\n(Press Enter to Continue.")
-    _=input()
+        useable= data['gear'][item]
+        if useable 
+    if item == "scrap1":
+        print(f"  __________\n /  _____  /\n/  |  ___| \\\n\\  | |__   /\n/  |__  \\  \\\n\\   __)  | /\n \\ |____/ / \n/________\\\n(Press Enter to Continue.")
+        _=input()
+    if item == 'scrap2':
+        print(f" ___________\n|  _   _   /\n| | | | | / \n| | |_| | \\ \n| |___  | / \n|     | | \\ \n|     |_|  \\\n|__________/\n(Press Enter to Continue.")
+        _=input()
+    if item == 'scrap3':
+        print(f"  _________\n /   ___   |\n \\  / _ \\  |\n / | (_) | |\n \\  > _ <  |\n / | (_) | |\n/   \___/  |\n\\__________|\n(Press Enter to Continue.")
+        _=input()
+    if item =='potions':
+        data['player']['stats']['hp'][0] += 15
+        if data['player']['stats']['hp'][0] > data['player']['stats']['hp'][1]:
+            data['player']['stats']['hp'][0] = data['player']['stats']['hp'][1]
 
 def levelup():
     clear()
@@ -757,7 +729,7 @@ def main():
 #        print(f"ERROR: Terminal size too small.  Please ensure terminal is at least {list_w+4} wide and {list_h+5} high.  Terminal is currently {maxx} x {maxy}.  Thank you.")
 #        exit()
     clear()   
-    intros(1)
+#    intros(1)
     displaymap()
     turn = 0
     print("This is is your interface.  To the south of you (down) is the cave entrance.  Ahead of you (up) is the cave.  You can't see much yet, but you heard barking echoing from somewhere.\nTo move: press w, a, s, or d and then Enter.  To pull up you character menu: press c or m followed by Enter.  For help: press h followed by enter.\nPress Enter to begin...")
