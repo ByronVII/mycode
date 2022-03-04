@@ -761,12 +761,12 @@ def main():
     displaymap()
     turn = 0
     print("This is is your interface.  To the south of you (down) is the cave entrance.  Ahead of you (up) is the cave.  You can't see much yet, but you heard barking echoing from somewhere.\nTo move: press w, a, s, or d and then Enter.  To pull up you character menu: press c or m followed by Enter.  For help: press h followed by enter.\nPress Enter to begin...")
+    _=input()
     while True:
         while True:
             clear()
             displaymap()
             turn += 1
-#            temp= round(((maxx-len(MapLoc))/2))
             action = input("What would you like to do? (Press h + Enter for help)\n>")
             if action in ["w","a","s","d"]:
                 MapLoc= makemove(action)
@@ -779,7 +779,7 @@ def main():
                 clear()
                 displaymap()
                 if combatenable == 1:
-                    if randint(1,1) == 1:
+                    if randint(1,5) == 1:
                         combat()
                 if maplist[MapLoc[0]][MapLoc[1]][2] != " ":
                     events(maplist[MapLoc[0]][MapLoc[1]][2])
