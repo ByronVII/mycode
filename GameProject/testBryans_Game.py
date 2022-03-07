@@ -122,31 +122,31 @@ def setvars():
 
 def loadgame():
     global data, maplist, MapLoc
-    savefile= {}
-    with open('savefile.csv', mode='r') as inp:
-        save= csv.DictReader(inp) 
-        print(save)
-        savefiles = {rows[0]:rows[1] for rows in save}
+    savefiles = []
+#    with open('savefile.csv', mode='r') as inp:
+#        save= csv.DictReader(inp) 
+#        print(save)
+#        savefiles = {rows[0]:rows[1] for rows in save}
     
-#    with open('savegames2.txt','r') as savegames:
-#       savegame = json.load(savegames) #savegames.readline()    
-#    print(savefiles)
-    data = savefiles[0][1]
-    maplist = savefiles[1][1]
-    MapLoc = savefiles[2][1]
+    with open('savegames2.txt','r') as savegames:
+       savefiles = json.load(savegames) #savegames.readline()    
+    print(savefiles)
+    data = savefiles[0][0]
+    maplist = savefiles[1][0]
+    MapLoc = savefiles[2][0]
     _=input()
 
 def savegame():
     global data, maplist, MapLoc
 
-    dict = {'data' : data, 'maplist' : maplist, 'MapLoc' : MapLoc}
-    w = csv.writer(open("savefile.csv", "w"))
-    for key, val in dict.items():
-        w.writerow([key, val])
+#    dict = {'data' : data, 'maplist' : maplist, 'MapLoc' : MapLoc}
+#    w = csv.writer(open("savefile.csv", "w"))
+#    for key, val in dict.items():
+#        w.writerow([key, val])
 
 
-#    with open("savegames2.txt","w") as savefile:
-#        json.dump([data,maplist,MapLoc], savefile)
+    with open("savegames2.txt","w") as savefile:
+        json.dump([data,maplist,MapLoc], savefile)
 
 
 def clear():
