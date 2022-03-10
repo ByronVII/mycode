@@ -293,7 +293,7 @@ def intros(intro):
         sleep(3)
         print(f"One day while shirking chores and wandering around the outskirts of town with your dog Rusty you come across a cave entrance that you've never seen before.\n{gap}", end="")
         sleep(4)
-        print(f"At first you are excited to explore, but then you hear a growl echo from the cave and change your mind and start to back away.\n{gap}", end="")
+        print(f"At first you are excited to explore, but then you hear a growl echo from the cave causing you to change your mind.\n{gap}", end="")
         sleep(4)
         print(f"As you start to back away Rusty starts barking at the entrance and then suddenly darts off into the darkness.\n{gap}", end="")
         sleep(3)
@@ -633,6 +633,7 @@ def combat(monster):
                     result1 = f"You try to escape the {mname}, but can't get away."
                     break
             else:
+                displaymap()
                 continue
 
         dmg = matk + random.choice(atkvar) - pdef
@@ -793,6 +794,9 @@ def main():
     list_w= mapvars[3]
     maxy= split(os.get_terminal_size())[1]
     maxx= split(os.get_terminal_size())[0]
+    if maxx < list_w+2 or maxy < list_h+5:
+        print(f"ERROR: Terminal size too small.  Please ensure terminal is at least {list_w+4} wide and {list_h+5} high.  Terminal is currently {maxx} x {maxy}.  Thank you.")
+        exit()
     splash(1)
     _=input()
     while True:
@@ -812,16 +816,13 @@ def main():
             continue
 
 #checks that the terminal is big enough for the game
-#    if maxx < list_w+2:
-#        print(f"ERROR: Terminal size too small.  Please ensure terminal is at least {list_w+4} wide and {list_h+5} high.  Terminal is currently {maxx} x {maxy}.  Thank you.")
-#        exit()
-#    elif maxy < list_h+5: 
-#        print(f"ERROR: Terminal size too small.  Please ensure terminal is at least {list_w+4} wide and {list_h+5} high.  Terminal is currently {maxx} x {maxy}.  Thank you.")
-#        exit()
+    if maxx < list_w+2 or maxy < list_h+5:
+        print(f"ERROR: Terminal size too small.  Please ensure terminal is at least {list_w+4} wide and {list_h+5} high.  Terminal is currently {maxx} x {maxy}.  Thank you.")
+        exit()
     intros(1)
     displaymap()
     turn = 0
-    print("This is is your interface.  To the south of you (down) is the cave entrance.  Ahead of you (up) is the cave.  You can't see much yet, but you heard barkin echoing from somewhere deeper in the cave.\nTo move: press w, a, s, or d and then Enter.  To open your character menu: press c or m followed by Enter.  For help: press h followed by enter.\n\nPress Enter to begin...")
+    print("This is your interface.  To the south of you (down) is the cave entrance.  Ahead of you (up) is the cave.  You can't see much yet, but you hear barkin echoing from somewhere deeper in the cave.\nTo move: press w, a, s, or d and then Enter.  To open your character menu: press c or m followed by Enter.  For help: press h followed by enter.\n\nPress Enter to begin...")
     _=input()
     while True:
         while True:
