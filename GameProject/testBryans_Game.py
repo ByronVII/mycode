@@ -118,7 +118,7 @@ def setvars():
     global combatenable
     combatenable = 0
     global data
-    data= {"player":player, "monsters":monsters, 'items':items, 'loot':loot}
+    data= {"player":player, "monsters":monsters, 'items':items, 'loot':loot, 'boss': '0'}
 
 def loadgame():
     global data, maplist, MapLoc
@@ -170,8 +170,10 @@ def createmap():        #creates a list for each map tile as follows maplist[ena
             if maptemp[x][0] == "X":
                 templist.append([0," ",""])    #clears the starting point 'X' from the map
                 MapLoc= [y,x]
-            elif maptemp[x][0] in ["O","/","\\"]:       #sets the cave entrance tiles to enabled '1'
+            elif maptemp[x][0] in ["/","\\"]:       #sets the cave entrance tiles to enabled '1'
                 templist.append([1,maptemp[x][0],""])
+            elif maptemp[x][0] in ["O"]:       #sets the cave entrance tiles to enabled '1'
+                templist.append([1,"O","z"])
             elif maptemp[x][0] in ["#"]:       #sets the cave entrance tiles to enabled '1'
                 templist.append([0,"#",""])    
             else:                                       
@@ -225,16 +227,18 @@ def makemove(action):
                 return MapLoc
 
         elif action == "s":
-            if maplist[MapLoc[0]+1][MapLoc[1]][1] == " " and maplist[MapLoc[0]+1][MapLoc[1]][1] == " ":
+            if maplist[MapLoc[0]+1][MapLoc[1]][1] == " " and maplist[MapLoc[0]+2][MapLoc[1]][1] == " ":
                 MapLoc[0] += 2
                 return MapLoc
             elif maplist[MapLoc[0]+2][MapLoc[1]][1] == "O":
-                x= input("Would you like to leave the cave?\n>")
-                if x in ["y","yes","yeah","yep"]:
-                    print("Thanks for visiting the cave.  Have a great day!")
-                    exit()
-                else:
-                    return MapLoc
+                events('cave1')
+                return MapLoc
+#                x= input("Would you like to leave the cave?\n>")
+#                if x in ["y","yes","yeah","yep"]:
+#                    print("Thanks for visiting the cave.  Have a great day!")
+#                    exit()
+#                else:
+#                    return MapLoc
             else:
                 return MapLoc
 
@@ -270,30 +274,39 @@ def makemove(action):
     
 def intros(intro):
     if intro == 1:
+        clear()
+        print("\n"* ((maxy-8)//2))
+        tlen= 154
+        gap= " " * ((maxx-int(tlen)-2)//2)
+        player= input(f"{gap}Welcome adventurer.  By what name are you known?\n\n{gap}")
+        if player != "":
+            data['player']['stats']['name']= player
+        clear()
         print("\n"* ((maxy-8)//2))
         tlen= 154
         gap= " " * ((maxx-int(tlen)-2)//2)       
-        print(f"{gap}Welcome {data['player']['stats']['name']}.")
-        sleep(1)
-        print(f"{gap}You live in a small village in the middle of nowhere.")
+        print(f"{gap}Welcome {data['player']['stats']['name']}.\n{gap}", end="")
         sleep(2)
-        print(f"{gap}Life is boring and you often find yourself dreaming about leaving the village for a more exciting life.")
+        print(f"You live in a small village in the middle of nowhere.\n{gap}", end="")
+        sleep(2)
+        print(f"Life is boring and you often find yourself dreaming about leaving the village for a more exciting life.\n{gap}", end="")
         sleep(3)
-        print(f"{gap}One day while shirking chores and wandering around the outskirts of town with your dog Rusty you come across a cave entrance that you've never seen before.")
+        print(f"One day while shirking chores and wandering around the outskirts of town with your dog Rusty you come across a cave entrance that you've never seen before.\n{gap}", end="")
         sleep(4)
-        print(f"{gap}At first you are excited to explore, but then you hear a growl echo from the cave and change your mind and start to back away.")
+        print(f"At first you are excited to explore, but then you hear a growl echo from the cave and change your mind and start to back away.\n{gap}", end="")
         sleep(4)
-        print(f"{gap}As you start to back away Rusty starts barking at the entrance and then suddenly darts off into the darkness.")
+        print(f"As you start to back away Rusty starts barking at the entrance and then suddenly darts off into the darkness.\n{gap}", end="")
         sleep(3)
-        print(f"{gap}You call Rusty's name a few times as you edge towards the opening, but the barks you hear are getting softer.")
+        print(f"You call Rusty's name a few times as you edge towards the opening, but the barks you hear are getting softer.\n{gap}", end="")
         sleep(3)
-        print(f"{gap}You think about going to get help, but don't want to leave Rusty.  Reluctantly you enter the cave...")      
+        print(f"You think about going to get help, but don't want to leave Rusty.  Reluctantly you enter the cave...\n\n{gap}", end="")      
         sleep(3)
-        print(f"\n{gap}Continue...?")
+        print(f"Continue...?\n{gap}", end="")
         _=input()
     if intro == 'h':
-        print("Adenture Screen:\n -To move: press w, a, s, or d and then Enter.  To pull up you character menu: press c or m followed by Enter.  For help: press h followed by enter.")
+        print("Adenture Screen (screen with map):\n -To move: press w, a, s, or d and then Enter.  To pull up you character menu: press c or m followed by Enter.  For help: press h followed by enter.")
         print("Equipment Page:\n - To equip gear press the number of the slot you want to change and then Enter. (i.e. 1 is the number for your Weapon slot.).")
+        _=input()
         
 
 
@@ -397,8 +410,19 @@ def events(event):
         maplist[MapLoc[0]][MapLoc[1]][1] = " "
         maplist[MapLoc[0]][MapLoc[1]][2] = ""
         _=input()
+
     if event == 'b':
-        print("Boss")        
+        combat('boss')        
+        data['boss'] = '1'
+
+    if event == 'cave1':
+
+        if data['boss'] == '1':
+            print("You and Rusty smell fresh grass as you approach the cave exit.  Stepping out you feel the warm sun on your face and reflect on the ordeals you just endured.")
+        else:
+            print("Rusty is still lost in the cave.  You can't just abandon him!")
+        _=input()
+
 
 #main menu
 def mmenu():
@@ -441,7 +465,18 @@ def pmenu():
         elif pmenu == "4":
             for a in range(1, data['player']['stats']['level']+1):
                 print(f"{a}- {data['player']['abilities'][a][0]}   MP: {data['player']['abilities'][a][1]}\n  -{data['player']['abilities'][a][2]}\n  ")
-            abil= input("\nPress ability number to use ability or Enter to continue.")
+            abilmen= input("\nPress ability number to use ability or Enter to continue.\n")
+            if abilmen == '2':
+                abil = ability(2)
+                if abil[0] == 2 and abil[1] == 0:
+                    result1 = "You do not have enough mana"
+                elif abil[0] == 2:
+                    result1 = f"You healed {abil[1]} life."
+                print(abil)
+                print(result1)                
+                _=input()
+            else:
+                print("That ability can only be used during combat.")
 
         elif pmenu == "5":
             savegame()
@@ -450,6 +485,8 @@ def pmenu():
             mmenu()
         elif pmenu == "7":
             return
+        elif pmenu == 'h':
+            intros('h')
         else:
             continue
 
@@ -516,18 +553,19 @@ def equip(item,slot):        #stats
             data['player']['equipment'][slot] = item.title()       #equips the item on your player 
             data['player']['stats'][data['items']['gear'][item]['stat']] += data['items']['gear'][item][data['items']['gear'][item]['stat']]        #adds item stats to player stats
             print(f"{item.title()} was equipped in the {slot} slot.")
-            data['player']['inventory'].remove(item)       #removes the equipped item from inventory
+            idata['player']['inventory'].remove(item)       #removes the equipped item from inventory
         else:
             print(f"{item.title()} does not go in the {slot} slot.")
     else:
         print(f"{item} not found in inventory")
 #attack results
-def combat():
-#    global data
-    plife= data["player"]["stats"]["hp"][0]
+def combat(monster):
+    if monster == 'boss':
+        mon = 'ogre'
+    else:
+        mon= randint(1, data['player']['stats']['level'])         #data["monsters"]["goblin"]["name"]
     patk= data["player"]["stats"]["atk"]
     pdef= data['player']['stats']['def']
-    mon= randint(1, data['player']['stats']['level'])         #data["monsters"]["goblin"]["name"]
     mname= data['monsters']['monsters'][mon-1]
     mlife= data["monsters"][mname]["hp"]
     matk= data["monsters"][mname]["atk"]
@@ -536,7 +574,7 @@ def combat():
 
     print(f"Youn encounter {mname}.")
 
-    while plife > 0 and mlife > 0:
+    while data["player"]["stats"]["hp"][0] > 0 and mlife > 0:
         while True:
             fmenu= (input("What would you like to do?\n  1- Attack\n  2- Ability\n  3- Use item\n  4- Change Equipment\n  5- Escape\n"))
             if fmenu == 'cheatkiller':
@@ -552,20 +590,24 @@ def combat():
                 displaymap()
                 dmg = patk + random.choice(atkvar)
                 mlife -= dmg
-                print(f"You hit {mname} for {dmg}.  {mname} is down to {mlife} life.")
+                result1 = f"You hit {mname} for {dmg}.  {mname} is down to {mlife} life."
                 break
             elif fmenu == '2':
                 abil= []
-                abil= ability()
+                abil= ability(0)
                 if abil[0] == 1 and abil[1] == 1:
                     clear()
                     displaymap()
                     dmg = round((patk + random.choice(atkvar)) * 1.5)
                     mlife -= dmg
-                    print(f"You hit {mname} with a powerful blow for {dmg}.  {mname} is down to {mlife} life.")
+                    result1 = f"You hit {mname} with a powerful blow for {dmg}.  {mname} is down to {mlife} life."
                     break
                 elif abil[0] == 1 and abil[1] == 0:
-                    print("You swing wildly, but miss your target.")
+                    result1 = "You swing wildly, but miss your target."
+                elif abil[0] == 2 and abil[1] == 0:
+                    result1 = "You do not have enough mana"
+                elif abil[0] == 2:
+                    result1 = f"You healed {abil[1]} life."
 
                 break
             elif fmenu == '3':
@@ -588,27 +630,30 @@ def combat():
                     sleep(2)
                     return
                 else:
-                    print(f"You try to escape the {mname}, but can't get away.")
+                    result1 = f"You try to escape the {mname}, but can't get away."
                     break
             else:
                 continue
+
         dmg = matk + random.choice(atkvar) - pdef
         if dmg < 1:
-            print(f"{mname} missed you.")
+            result2 = f"{mname} missed you."
         else:
-            plife -= dmg
-            print(f"{mname} hit you for {dmg}.  You are down to {plife} life.")
-    data["player"]["stats"]["hp"][0] = plife
+            data["player"]["stats"]["hp"][0] -= dmg
+            result2 = f'{mname} hit you for {dmg}.  You are down to {data["player"]["stats"]["hp"][0]} life.'
+        displaymap()
+        print(result1)
+        print(result2)
 
 #fight results
-    if  plife < 1 and mlife < 1:         #both player and creature died
+    if data["player"]["stats"]["hp"][0] < 1 and mlife < 1:         #both player and creature died
         print(f"You managed to slay the {mname}, however, your own injuries are too grevious and you too succumb to death.")
         sleep(2)
         print("How embarassing.")
         sleep(2)
         splash2()
         mmenu
-    elif plife < 1:         #only the player died
+    elif data["player"]["stats"]["hp"][0]< 1:         #only the player died
         print("You have died...")
         sleep(1)
         print("Seriously...")
@@ -629,18 +674,34 @@ def combat():
 
     _= input("Press enter to continue.")
 
-def ability():
+def ability(abilmen):
     while True:
-        print("Available abilities.  Which would you like to use?")
-        for a in range(1,data['player']['stats']['level']+1):
-            print(f"{a}- {data['player']['abilities'][a][0]}     MP: {data['player']['abilities'][a][1]}\n")
-        abil= input()
+        if abilmen == 2:
+            abil = '2'
+        else:
+            print("Available abilities.  Which would you like to use?")
+            for a in range(1,data['player']['stats']['level']+1):
+                print(f"{a}- {data['player']['abilities'][a][0]}     MP: {data['player']['abilities'][a][1]}\n")
+            abil= input()
         if abil == "1":
             if randint(1,4) != 1:
                 return [1,1]
             else:
                 return [1,0]
             break
+        if abil == '2':
+            if data['player']['stats']['mana'][0] >= 5:
+                data['player']['stats']['mana'][0] -= 5
+                heal= int(data['player']['stats']['hp'][1] *.3)
+                data['player']['stats']['hp'][0] += heal
+                int(data['player']['stats']['hp'][1] *.3)
+                if data['player']['stats']['hp'][0] > data['player']['stats']['hp'][1]: 
+                    heal = heal - (data['player']['stats']['hp'][0] - data['player']['stats']['hp'][1])
+                    data['player']['stats']['hp'][0] = data['player']['stats']['hp'][1]
+                return [2,heal]
+            else:
+                return [2,0]
+
 
 
 def useitem():
@@ -660,10 +721,10 @@ def useitem():
             data['player']['stats']['hp'][0] += 15
             if data['player']['stats']['hp'][0] > data['player']['stats']['hp'][1]:
                 data['player']['stats']['hp'][0] = data['player']['stats']['hp'][1]
-            data['player']['inventory'][0]['potions']
+            data['player']['inventory'][0]['potions'] -= 1
         else:
             print("You are out of potions.")
-            _=input()
+#            _=input()
     elif len(inv) > 0:
         item= inv[int(use)-2]          
         if item == "scrap1":
@@ -724,6 +785,7 @@ maxx= mapvars[3]
 def main():
     setvars()
     global maplist,MapLoc,list_h,list_w,maxx,maxy    
+    boss = '0'
     mapvars= createmap()
     maplist= mapvars[0]
     MapLoc= mapvars[1]
@@ -756,11 +818,10 @@ def main():
 #    elif maxy < list_h+5: 
 #        print(f"ERROR: Terminal size too small.  Please ensure terminal is at least {list_w+4} wide and {list_h+5} high.  Terminal is currently {maxx} x {maxy}.  Thank you.")
 #        exit()
-    clear()   
     intros(1)
     displaymap()
     turn = 0
-    print("This is is your interface.  To the south of you (down) is the cave entrance.  Ahead of you (up) is the cave.  You can't see much yet, but you heard barking echoing from somewhere.\nTo move: press w, a, s, or d and then Enter.  To pull up you character menu: press c or m followed by Enter.  For help: press h followed by enter.\nPress Enter to begin...")
+    print("This is is your interface.  To the south of you (down) is the cave entrance.  Ahead of you (up) is the cave.  You can't see much yet, but you heard barkin echoing from somewhere deeper in the cave.\nTo move: press w, a, s, or d and then Enter.  To open your character menu: press c or m followed by Enter.  For help: press h followed by enter.\n\nPress Enter to begin...")
     _=input()
     while True:
         while True:
@@ -779,14 +840,14 @@ def main():
                 clear()
                 displaymap()
                 if combatenable == 1:
-                    if randint(1,5) == 1:
-                        combat()
+                    if randint(1,4) == 1:
+                        combat(0)
                 if maplist[MapLoc[0]][MapLoc[1]][2] != " ":
                     events(maplist[MapLoc[0]][MapLoc[1]][2])
             elif action in ["c","m"]:
                 pmenu()
             elif action in ['h','help']:
-                intros(h)
+                intros('h')
             elif action in ['uuddlrlrbastart']:
                 cheatmenu(0)
             elif action == "q":
